@@ -5,5 +5,28 @@ services:
       context: .
     environment:
       - FLASK_ENV=development
+      - DATABASE_URL=postgresql://contactbook:contactbook@db:5432/contactbook
     ports:
       - "5000:5000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:16
+    environment:
+      - POSTGRES_USER=contactbook
+      - POSTGRES_PASSWORD=contactbook
+      - POSTGRES_DB=contactbook
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data_cb:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "contactbook", "-d", "contactbook"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data_cb:

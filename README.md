@@ -17,13 +17,28 @@ docker compose up --build
 ```bash
 curl http://localhost:5000/health
 ```
-
 Expected output:
 ```json
 {
   "status": "healthy"
 }
 ```
+
+## Verify Database
+```bash
+docker compose exec db psql -U contactbook -d contactbook -c '\dt'
+```
+Expected Output:
+```
+            List of relations
+ Schema |   Name   | Type  |    Owner
+--------+----------+-------+-------------
+ public | contacts | table | contactbook
+ public | emails   | table | contactbook
+ public | phones   | table | contactbook
+(3 rows)
+```
+
 ## Teardown the app
 ```bash
 docker compose down -v

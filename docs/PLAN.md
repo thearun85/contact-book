@@ -7,7 +7,7 @@ A REST api to manage contacts. Built to learn Python, Flask, SQLAlchemy, Validat
 
 ## Project Phases
 - [x] Phase 0: Project setup - Folder structure, Docker and a mock health check api
-- [ ] Phase 1: Models and DB setup
+- [x] Phase 1: Models and DB setup
 - [ ] Phase 2: CRUD endpoints
 - [ ] Phase 3: Validation Format, validate first, last & nick names
 - [ ] Phase 4: Validate Email and Phone patterns
