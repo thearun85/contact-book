@@ -64,7 +64,7 @@ curl -X POST http://localhost:5000/api/v1/contacts \
 curl http://localhost:5000/api/v1/contacts
 ```
 
-## Validation first_name, last_name, nick_name
+## Validation first_name, last_name, nick_name, email, phone
 **Request:**
 ```bash
 curl -X POST http://localhost:5000/api/v1/contacts \

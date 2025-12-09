@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 from app.db import get_session
 from app.models import Contact, Email, Phone
-from app.validators import ValidationResult, validate_name
+from app.validators import ValidationResult, validate_name, validate_email, validate_phone
 import traceback
 
 contact_bp = Blueprint("contacts", __name__, url_prefix="/api/v1/contacts")
@@ -50,6 +50,18 @@ def create_contact():
 
     if "nick_name" in data and data["nick_name"] is not None:
         result.merge(validate_name(data['nick_name'], "nick_name", 0, 50))
+
+    for i, email_data in enumerate(data.get("emails", [])):
+        if "email" not in email_data or email_data["email"] is None:
+            result.add_error("email", "Required field")
+        else:
+            result.merge(validate_email(email_data["email"], 255, f"emails[{i}].email"))
+
+    for i, phone_data in enumerate(data.get("phones", [])):
+        if "number" not in phone_data or phone_data["number"] is None:
+            result.add_error("phone", "Required field")
+        else:
+            result.merge(validate_phone(phone_data["number"], f"phones[{i}].number"))
 
     if not result.is_valid():
         return jsonify(result.to_dict()), 400
