@@ -1,6 +1,8 @@
 from flask import Blueprint, jsonify, request
 from app.db import get_session
 from app.models import Contact, Email, Phone
+from app.validators import ValidationResult, validate_name
+import traceback
 
 contact_bp = Blueprint("contacts", __name__, url_prefix="/api/v1/contacts")
 
@@ -32,7 +34,26 @@ def to_dict(contact)->dict:
     
 @contact_bp.route("", methods=["POST"])
 def create_contact():
+
     data = request.get_json()
+    result = ValidationResult()
+
+    if "first_name" not in data or data["first_name"] is None:
+        result.add_error("first_name", "Required field")
+    else:
+        result.merge(validate_name(data["first_name"], "first_name"))
+
+    if "last_name" not in data or data["last_name"] is None:
+        result.add_error("last_name", "Required field")
+    else:
+        result.merge(validate_name(data["last_name"], "last_name"))
+
+    if "nick_name" in data and data["nick_name"] is not None:
+        result.merge(validate_name(data['nick_name'], "nick_name", 0, 50))
+
+    if not result.is_valid():
+        return jsonify(result.to_dict()), 400
+        
     session = get_session()
     try:
         contact = Contact(
@@ -53,9 +74,9 @@ def create_contact():
 
         for phone_data in data.get("phones", []):
             phone = Phone(
-                number = data["number"],
-                label = data.get("label"),
-                is_primary = data.get("is_primary", False)
+                number = phone_data["number"],
+                label = phone_data.get("label"),
+                is_primary = phone_data.get("is_primary", False)
             )
             contact.phones.append(phone)
 
@@ -65,6 +86,7 @@ def create_contact():
         return jsonify(to_dict(contact)), 201
     except Exception as e:
         session.rollback()
+        traceback.print_exc()
         return jsonify({
             "error": str(e)
         }), 500

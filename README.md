@@ -64,6 +64,38 @@ curl -X POST http://localhost:5000/api/v1/contacts \
 curl http://localhost:5000/api/v1/contacts
 ```
 
+## Validation first_name, last_name, nick_name
+**Request:**
+```bash
+curl -X POST http://localhost:5000/api/v1/contacts \
+  -H "Content-Type: application/json" \
+  -d '{
+    "first_name": "",
+    "last_name": "", "nick_name":"jgsafjgasjhfgajsfgjasgfjgasjfgajsfgjkagfjkagskjfgasjkdfgjkhasgfdjkhdgajskfgjakgfjhkagfjgasjkfgjasgfjagfjgajkfgjagfjagjfgajk", "emails": [{"email": "jane@example.com", "label": "work", "is_primary": true}],
+    "phones": [{"number": "+14155551234", "label": "mobile", "is_primary": true}]
+  }'
+```
+Expected Output:
+```
+{
+  "details": [
+    {
+      "field": "first_name",
+      "message": "Length must be atleast 1 characters."
+    },
+    {
+      "field": "last_name",
+      "message": "Length must be atleast 1 characters."
+    },
+    {
+      "field": "nick_name",
+      "message": "Cannot exceed 50 characters."
+    }
+  ],
+  "error": "ValidationFailed"
+}
+```
+
 ## Teardown the app
 ```bash
 docker compose down -v
