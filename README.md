@@ -39,6 +39,31 @@ Expected Output:
 (3 rows)
 ```
 
+## API Endpoints
+| Path | Method | Description |
+|------|--------|-------------|
+| /api/v1/contacts | POST | Create contact |
+| /api/v1/contacts | GET | List all contacts |
+
+## Example Requests
+
+**Create:**
+```bash
+curl -X POST http://localhost:5000/api/v1/contacts \
+  -H "Content-Type: application/json" \
+  -d '{
+    "first_name": "Jane",
+    "last_name": "Doe",
+    "emails": [{"email": "jane@example.com", "label": "work", "is_primary": true}],
+    "phones": [{"number": "+14155551234", "label": "mobile", "is_primary": true}]
+  }'
+```
+
+**List all:**
+```bash
+curl http://localhost:5000/api/v1/contacts
+```
+
 ## Teardown the app
 ```bash
 docker compose down -v

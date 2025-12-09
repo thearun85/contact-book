@@ -15,7 +15,8 @@ def create_app():
         from app.models import Contact, Email, Phone
         Base.metadata.create_all(engine)
         
-    from app.api import health_bp
+    from app.api import health_bp, contact_bp
     app.register_blueprint(health_bp)
+    app.register_blueprint(contact_bp)
 
     return app
