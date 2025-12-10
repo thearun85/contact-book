@@ -24,7 +24,7 @@ def to_dict(contact)->dict:
         for e in contact.emails
         ],
         "phones": [{
-            "numner": p.number,
+            "number": p.number,
             "label": p.label,
             "is_primary": p.is_primary,
         }
@@ -126,3 +126,89 @@ def list_all_contacts():
         return jsonify([to_dict(c) for c in contacts]), 200
     finally:
         session.close()
+
+@contact_bp.route("/<int:contact_id>", methods=["GET"])
+def get_contact(contact_id):
+
+    session = get_session()
+    try:
+        contact = session.query(Contact).filter(Contact.id == contact_id).first()
+
+        if contact is None:
+            return jsonify({
+                "error": "Contact not found"
+            }), 404
+            
+        return jsonify(to_dict(contact)), 200
+    finally:
+        session.close()
+        
+@contact_bp.route("/<int:contact_id>", methods=["DELETE"])
+def delete_contact(contact_id):
+    session = get_session()
+
+    try:
+        contact = session.query(Contact).filter(Contact.id == contact_id).first()
+
+        if not contact:
+            return jsonify({
+                "error": "Contact not found"
+            }), 404
+        session.delete(contact)
+        session.commit()
+        return "", 204
+
+    finally:
+        session.close()
+
+@contact_bp.route("/<int:contact_id>", methods=["PUT"])
+def update_contact(contact_id):
+    session = get_session()
+    data = request.get_json()
+    try:
+        
+        contact = session.query(Contact).filter(Contact.id  == contact_id).first()
+
+        if not contact:
+            return jsonify({
+                "error", "Contact not found"
+            }), 404
+
+        if "first_name" in data:
+            contact.first_name = data["first_name"]
+        if "last_name" in data:
+            contact.last_name = data["last_name"]
+        if "nick_name" in data:
+            contact.nick_name = data["nick_name"]
+        if "date_of_birth" in data:
+            contact.date_of_birth = data["date_of_birth"]
+        if "notes" in data:
+            contact.notes = data["notes"]
+
+        if "emails" in data:
+            contact.emails.clear()
+            for email_data in data.get("emails", []):
+                email = Email(
+                    email = email_data["email"],
+                    label = email_data.get("label"),
+                    is_primary = email_data.get("is_primary", False),
+                )
+                contact.emails.append(email)
+
+        if "phones" in data:
+            contact.phones.clear()
+            for phone_data in data.get("phones", []):
+                phone = Phone(
+                    number = phone_data["number"],
+                    label = phone_data.get("label"),
+                    is_primary = phone_data.get("is_primary", False),
+                )
+                contact.phones.append(phone)
+
+        session.commit()
+        session.refresh(contact)
+        return jsonify(to_dict(contact)), 200
+    finally:
+        session.close()
+        
+        

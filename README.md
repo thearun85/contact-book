@@ -65,6 +65,29 @@ curl -X POST http://localhost:5000/api/v1/contacts \
 curl http://localhost:5000/api/v1/contacts
 ```
 
+**Get a Single Contact:**
+```bash
+curl http://localhost:5000/api/v1/contacts/1
+```
+
+**Delete a Contact:**
+```bash
+curl -X DELETE http://localhost:5000/api/v1/contacts/1
+```
+
+**Update a Contact:**
+```bash
+curl -X PUT http://localhost:5000/api/v1/contacts \
+  -H "Content-Type: application/json" \
+  -d '{
+    "first_name": "Charley",
+    "last_name": "Doe",
+    "date_of_birth": "2025-12-10",
+    "emails": [{"email": "charley@example.com", "label": "work", "is_primary": true}],
+    "phones": [{"number": "+14155551234", "label": "mobile", "is_primary": true}]
+  }'
+```
+
 ## Validation first_name, last_name, nick_name, email, phone, date_of_birth, primary_flag, no duplicate emails & phones.
 **Request:**
 ```bash

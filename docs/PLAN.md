@@ -13,5 +13,5 @@ A REST api to manage contacts. Built to learn Python, Flask, SQLAlchemy, Validat
 - [x] Phase 4: Validate Email and Phone patterns
 - [x] Phase 5: Validate Date of birth
 - [x] Phase 6: Business rules - No duplicates and primary flags
-- [ ] Phase 7: CRUD enpoints - get a single contact, update and delete a contact
+- [x] Phase 7: CRUD enpoints - get a single contact, update and delete a contact
 - [ ] Phase 8: Exception Handling
