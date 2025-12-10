@@ -1,5 +1,6 @@
 from app.validators.result import ValidationResult
 import re
+from datetime import datetime, date
 
 EMAIL_PATTERN = re.compile(
     r"^[a-zA-Z0-9_.%+-]+@[a-zA-Z0-9_.]+\.[a-zA-Z]{2,}$"
@@ -64,4 +65,25 @@ def validate_phone(value:str, field:str="phone")->ValidationResult:
     if not PHONE_PATTERN.match(value):
         result.add_error(field, "Invalid format. Example: '+1656565656'")
 
+    return result
+
+def validate_date_of_birth(value:str, field="date_of_birth")->ValidationResult:
+    result = ValidationResult()
+
+    if not isinstance(value, str):
+        result.add_error(field, "Must be a string")
+        return result
+        
+    try:
+        parsed = datetime.strptime(value, '%Y-%m-%d').date()
+    except ValueError:
+        result.add_error(field, "Invalid date format. Expected: YYYY-MM-DD")
+        return result
+
+    if parsed > date.today():
+        result.add_error(field, "Cannot be in the future")
+        return result
+
+    if parsed.year < 1900:
+        result.add_error(field, "Year must be 1900 or later")
     return result

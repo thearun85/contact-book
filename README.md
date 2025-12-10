@@ -54,6 +54,7 @@ curl -X POST http://localhost:5000/api/v1/contacts \
   -d '{
     "first_name": "Jane",
     "last_name": "Doe",
+    "date_of_birth": "2025-12-10",
     "emails": [{"email": "jane@example.com", "label": "work", "is_primary": true}],
     "phones": [{"number": "+14155551234", "label": "mobile", "is_primary": true}]
   }'
@@ -64,7 +65,7 @@ curl -X POST http://localhost:5000/api/v1/contacts \
 curl http://localhost:5000/api/v1/contacts
 ```
 
-## Validation first_name, last_name, nick_name, email, phone
+## Validation first_name, last_name, nick_name, email, phone, date_of_birth,
 **Request:**
 ```bash
 curl -X POST http://localhost:5000/api/v1/contacts \
