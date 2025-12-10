@@ -65,7 +65,7 @@ curl -X POST http://localhost:5000/api/v1/contacts \
 curl http://localhost:5000/api/v1/contacts
 ```
 
-## Validation first_name, last_name, nick_name, email, phone, date_of_birth,
+## Validation first_name, last_name, nick_name, email, phone, date_of_birth, primary_flag, no duplicate emails & phones.
 **Request:**
 ```bash
 curl -X POST http://localhost:5000/api/v1/contacts \

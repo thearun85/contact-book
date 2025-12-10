@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 from app.db import get_session
 from app.models import Contact, Email, Phone
-from app.validators import ValidationResult, validate_name, validate_email, validate_phone, validate_date_of_birth
+from app.validators import ValidationResult, validate_name, validate_email, validate_phone, validate_date_of_birth, validate_primary_flag, validate_duplicate_emails, validate_duplicate_phones
 import traceback
 
 contact_bp = Blueprint("contacts", __name__, url_prefix="/api/v1/contacts")
@@ -53,19 +53,28 @@ def create_contact():
 
     if "date_of_birth" in data and data["date_of_birth"] is not None:
         result.merge(validate_date_of_birth(data["date_of_birth"]))
+
+    emails = data.get("emails", [])
     
-    for i, email_data in enumerate(data.get("emails", [])):
+    for i, email_data in enumerate(emails):
         if "email" not in email_data or email_data["email"] is None:
             result.add_error("email", "Required field")
         else:
             result.merge(validate_email(email_data["email"], 255, f"emails[{i}].email"))
 
-    for i, phone_data in enumerate(data.get("phones", [])):
+    phones = data.get("phones", [])
+    
+    for i, phone_data in enumerate(phones):
         if "number" not in phone_data or phone_data["number"] is None:
             result.add_error("phone", "Required field")
         else:
             result.merge(validate_phone(phone_data["number"], f"phones[{i}].number"))
 
+    result.merge(validate_primary_flag(emails, "emails"))
+    result.merge(validate_primary_flag(phones, "phones"))
+    result.merge(validate_duplicate_emails(emails))
+    result.merge(validate_duplicate_phones(phones))
+    
     if not result.is_valid():
         return jsonify(result.to_dict()), 400
         
