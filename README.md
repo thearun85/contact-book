@@ -8,6 +8,16 @@ A REST api to manage contact book. Built to learn Python, Flask, SQLAlchemy, Val
 - Postgres
 - Docker
 
+## Project Evolution
+
+### Version 1.0 (Tag: v1-original-learning)
+- Initial implementation focusing on fundamentals
+- Custom validation system built from scratch
+- Basic Flask API with sqlalchemy
+
+### Version 2.0 (Branch: refactor/modern-python)
+- [See detailed refactor plan] (docs/REFACTOR_PLAN.md)
+
 ## Running Locally
 ```bash
 docker compose up --build
